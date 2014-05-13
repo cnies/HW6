@@ -1,0 +1,112 @@
+Christopher Nies
+A11393577
+Section B00
+May 7th, 2014
+
+Part I:
+	I.	Heap
+		A. Chose the following parameters because I knew this sorting algorithm is 
+		an O(n logn) algorithm,  and can handle it in a quick amount of time. 
+		
+		java SortTimer2 random-strings.txt 4 10000 5000 7
+		Document: random-strings.txt
+		sortAlg: 4
+		=======================================
+		1:   10000 words in      25 milliseconds
+		2:   15000 words in      13 milliseconds
+		3:   20000 words in      21 milliseconds
+		4:   25000 words in      22 milliseconds
+		5:   30000 words in      29 milliseconds
+		6:   35000 words in      35 milliseconds
+		7:   40000 words in      41 milliseconds
+
+		B. I am excluding the first rep, because for some reason on this machine the
+		first rep is slower in all cases. Looking at the numbers from trial 2 and
+		trial 5, the numbers slighly more than doubled, which indicates to me an
+		order n*logn complexity. The time it took roughly doubled as well between
+		trial 3 and trial 7, which in this case actually almost makes it appear to 
+		be an order n algorithm. Which is not the case, but with numbers like these
+		a rough doubling is stil an indication of an n logn algorithm.
+
+	II.	Insertion
+		A. I had experience with this sorting algorithm from last week, and I know
+		it was very quick, rivaling that of an n*logn algorithm despite (kinda)
+		being order n^2. (Kinda).
+
+		java SortTimer2 random-strings.txt 1 10000 5000 7
+		Document: random-strings.txt
+		sortAlg: 1
+		=======================================
+		1:   10000 words in      13 milliseconds
+		2:   15000 words in      14 milliseconds
+		3:   20000 words in      25 milliseconds
+		4:   25000 words in      42 milliseconds
+		5:   30000 words in      52 milliseconds
+		6:   35000 words in      69 milliseconds
+		7:   40000 words in      89 milliseconds
+		
+		B. Going to ignore the first rep again for the sake of fairness. It looks
+		like a hybrid between nlog(n) and n^2 (which is kind of what it is because 
+		of the binary search), sinceit more than doubles between trials 2 and 5, 
+		but it does not quadruple like a true n^2 algorithm would. Same case with 
+		trials 3 and 7, the data points indicate a behavior consistent with the 
+		weird hybrid that it is.
+
+Part 2:
+	I.	Heap
+		A. Same as above, for the same reasons. It would be very, very quick
+		java SortTimer2 random-strings-sorted.txt 4 10000 5000 8
+		Document: random-strings-sorted.txt
+		sortAlg: 4
+		=======================================
+		1:   10000 words in      18 milliseconds
+		2:   15000 words in       9 milliseconds
+		3:   20000 words in      15 milliseconds
+		4:   25000 words in      19 milliseconds
+		5:   30000 words in      21 milliseconds
+		6:   35000 words in      26 milliseconds
+		7:   40000 words in      30 milliseconds
+		8:   45000 words in      33 milliseconds
+
+		B. Nothing that surprising here. While it definitely takes less time to sort
+		it does not take an extremely small amount of time because adding and 
+		removing objects from a heap, even in a presorted order. In fact, in the 
+		presorted case it take a bit longer to remove because the trickleDown 
+		element is guarunteed to be near the bottom, since it came from the bottom
+		and is therefore one of the largest elements in the list
+
+	II.	Insertion
+	A. Since I know that running insertion sort on a regular random list was
+	roughly nlog(n), and I know how a regular insertion sort works,
+	I knew I could use large numbers here. It would be very quick.
+
+	java SortTimer2 random-strings-sorted.txt 1 10000 5000 8
+	Document: random-strings-sorted.txt
+	sortAlg: 1
+	=======================================
+	1:   10000 words in       5 milliseconds
+	2:   15000 words in       0 milliseconds
+	3:   20000 words in       1 milliseconds
+	4:   25000 words in       1 milliseconds
+	5:   30000 words in       2 milliseconds
+	6:   35000 words in       5 milliseconds
+	7:   40000 words in       3 milliseconds
+	8:   45000 words in       3 milliseconds
+	
+	B. Not much to say here, other than the presorted case is obviously the ideal
+	case for this insertion sort, just like most non-recursvie sorting algorithms.
+	Basically all this algorithm has to do is run through the list (which is 
+	extremely quick) and add the elements to the list, and such it scales pretty
+	lineraly with a presorted list.
+
+Part III.
+	Fundamentally, the two pre-sorted cases are different because the insertion
+	sort by its definition can sort of already detect when the list is already
+	sorted, which makes these cases extremely fast and scale better than usual. 
+	Whereas Heap sort still needs to add elements to a heap (no need to bubble up
+	since it is already preordered), then needs to extract an element, which
+	takes just as many if not more steps than in a non-presorted case becuase the
+	biggest element needs to now trickle down all the way through the list. As a
+	result, this algorithm by design does not have a way to detect if the list
+	is presorted, and thus scales about the same, even if it runs a little faster
+	than usual.
