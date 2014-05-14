@@ -246,7 +246,7 @@ AbstractQueue<E>
 				(shouldBeSwapped(rightChild(index), index) ||
 				 shouldBeSwapped(leftChild(index),index))){
 			//If it has a right child
-			if (hasRightChild(index)){
+			if (hasRightChild(index)&&theHeap.get(rightChild(index))!= null){
 				//If left should be swapped with right, then that means the top
 				//should be swapped with left (because it is the smallest in a MinHeap,
 				//or the largest in a Max Heap)
@@ -283,49 +283,33 @@ AbstractQueue<E>
 				heap.shouldBeSwapped(heap.childToBeSwapped(i), i));
 	}
 
-	public boolean isHeap(){
-		return isHeap(0);
-	}
-
-	private boolean isHeap(int index){
-		if (!this.hasLeftChild(index)){
-			return true;
-		}
-		else if (!this.hasRightChild(index)){
-			return !this.shouldBeSwapped(index, this.leftChild(index));
-		}
-		else{
-			if ((this.shouldBeSwapped(index, leftChild(index)) ||
-					this.shouldBeSwapped(index, rightChild(index)))
-					&& !areChildrenEqual(index)){
+	//Simple test I wrote to make sure it is a proper heap
+	private boolean isHeap(){
+		for (int i = 0; i<theHeap.size(); i++){
+			E toCompare = theHeap.get(i);
+			if ( (hasLeftChild(i) && theHeap.get(leftChild(i))!=null &&
+				toCompare.compareTo(theHeap.get(leftChild(i)))*(isMax ? 1:-1)<0)
+					||  (hasRightChild(i) && theHeap.get(rightChild(i))!=null &&
+					toCompare.compareTo(theHeap.get(rightChild(i)))*(isMax ? 1:-1)<0))
 				return false;
-			}
-			else{
-				boolean toReturn;
-				toReturn = isHeap(leftChild(index));
-				if (!toReturn) {return false;}
-				toReturn = isHeap(rightChild(index));
-				return toReturn;
-			}
 		}
+		return true;
 	}
 
-	private boolean areChildrenEqual(int index){
-		int checkLeft = theHeap.get(index).compareTo(theHeap.get(leftChild(index)));
-		int checkRight = theHeap.get(index).compareTo(theHeap.get(rightChild(index)));
-		if (checkLeft == 0 && checkRight == 0)
-			return true;
-		else
-			return false;
-	}
+
 	//Just used for testing
 	public static void main(String[] args){
 		java.util.Random gen = new java.util.Random();
 		Heap12<Integer> theHeap = new Heap12<Integer>(false);
-		for (int i = 1; i<=10; i++){
-			theHeap.offer(new Integer(gen.nextInt(10)));
+		for (int i = 1; i<=30; i++){
+			theHeap.offer(new Integer(gen.nextInt(30)));
 		}
-		System.out.println(theHeap);
+		Iterator iter = theHeap.iterator();
+		for (int i = 0; i<15; i++)
+			iter.next();
+		iter.remove();
+		iter.next();
+		iter.remove();
 		System.out.println(theHeap.isHeap());
 	}
 
