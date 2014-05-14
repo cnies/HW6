@@ -250,8 +250,7 @@ AbstractQueue<E>
 				//If left should be swapped with right, then that means the top
 				//should be swapped with left (because it is the smallest in a MinHeap,
 				//or the largest in a Max Heap)
-				if ((shouldBeSwapped(leftChild(index), rightChild(index)))
-						|| theHeap.get(rightChild(index))==null){
+				if ((shouldBeSwapped(leftChild(index), rightChild(index)))) {
 					swap(leftChild(index), index);
 					index = leftChild(index);
 				}
@@ -278,33 +277,61 @@ AbstractQueue<E>
 	}
 
 	//Just used for testing
-	public static void testChild(Heap12 heap, int i){
+	private static void testChild(Heap12 heap, int i){
 		System.out.println("Child to be swapped: "+heap.childToBeSwapped(i));
 		System.out.println("It will be swapped: "+ 
 				heap.shouldBeSwapped(heap.childToBeSwapped(i), i));
 	}
 
+	public boolean isHeap(){
+		return isHeap(0);
+	}
+
+	private boolean isHeap(int index){
+		if (!this.hasLeftChild(index)){
+			return true;
+		}
+		else if (!this.hasRightChild(index)){
+			return !this.shouldBeSwapped(index, this.leftChild(index));
+		}
+		else{
+			if ((this.shouldBeSwapped(index, leftChild(index)) ||
+					this.shouldBeSwapped(index, rightChild(index)))
+					&& !areChildrenEqual(index)){
+				return false;
+			}
+			else{
+				boolean toReturn;
+				toReturn = isHeap(leftChild(index));
+				if (!toReturn) {return false;}
+				toReturn = isHeap(rightChild(index));
+				return toReturn;
+			}
+		}
+	}
+
+	private boolean areChildrenEqual(int index){
+		int checkLeft = theHeap.get(index).compareTo(theHeap.get(leftChild(index)));
+		int checkRight = theHeap.get(index).compareTo(theHeap.get(rightChild(index)));
+		if (checkLeft == 0 && checkRight == 0)
+			return true;
+		else
+			return false;
+	}
 	//Just used for testing
 	public static void main(String[] args){
-		Heap12<Integer> toTest = new Heap12<Integer>(7,false);
-		for (int i=1; i<=7; i++){
-			toTest.offer(i);
+		java.util.Random gen = new java.util.Random();
+		Heap12<Integer> theHeap = new Heap12<Integer>(false);
+		for (int i = 1; i<=10; i++){
+			theHeap.offer(new Integer(gen.nextInt(10)));
 		}
-		System.out.println(toTest);
-		for (int i=1; i<=7; i++){
-			System.out.println("\nShould return: "+i);
-			System.out.println("Did return: "+toTest.poll());
-			System.out.println("The Heap: "+toTest.toString());
-		}
-
-
+		System.out.println(theHeap);
+		System.out.println(theHeap.isHeap());
 	}
 
 	/** Inner Class for an Iterator **/
 	/* stub routines */
-	
-	//In order to not mess up the underlying structure of the Heap, I made it 
-	//iterate from right to left
+
 	private class Heap12Iterator implements Iterator<E>
 	{
 		private int index;
@@ -346,8 +373,11 @@ AbstractQueue<E>
 			if (!canRemove)
 				throw new IllegalStateException();
 			else{
-				theHeap.remove(index+1);
+				int removedIndex = this.index+1;
+				swap(removedIndex, theHeap.size()-1);
+				theHeap.set(theHeap.size()-1, null);
 				size--;
+				trickleDown(removedIndex);
 				canRemove = false;
 			}
 		}	
